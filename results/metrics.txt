@@ -1,0 +1,9 @@
+Cross-Modal Attention (Ours):
+  BLEU-1: 0.1390
+  BLEU-2: 0.0405
+  Cosine Sim: -0.0152
+
+Concatenation Baseline:
+  BLEU-1: 0.1359
+  BLEU-2: 0.0396
+  Cosine Sim: 0.0096

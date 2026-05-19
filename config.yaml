@@ -1,0 +1,74 @@
+
+# ============================================================
+#  DNNLS Assignment — Multimodal Sequence Modelling
+#  Module: 55-710365  |  Config: Hyperparameters & Settings
+# ============================================================
+
+model:
+  visual_encoder:
+    backbone: resnet18
+    pretrained: true
+    feature_dim: 512
+    freeze_backbone: true
+
+  text_encoder:
+    vocab_size: 3000
+    embed_dim: 64
+    hidden_dim: 128
+    num_layers: 1
+    dropout: 0.2
+
+  fusion:
+    # INNOVATION: Cross-Modal Bidirectional Attention
+    # Text attends to image features AND image attends to text features
+    # before combining via a learned gating network
+    type: cross_modal_attention
+    hidden_dim: 128
+    num_heads: 2
+    dropout: 0.1
+
+  sequence_model:
+    type: gru
+    input_dim: 128
+    hidden_dim: 256
+    num_layers: 1
+    dropout: 0.2
+    bidirectional: false
+
+  text_decoder:
+    hidden_dim: 256
+    embed_dim: 64
+    max_gen_len: 50
+    teacher_forcing_ratio: 0.7
+
+  image_decoder:
+    hidden_dim: 256
+    output_dim: 512
+
+training:
+  batch_size: 32
+  learning_rate: 0.002
+  weight_decay: 0.0001
+  num_epochs: 5
+  max_seq_len: 3
+  max_text_len: 40
+  train_subset: 300
+  val_subset: 80
+  use_amp: true
+  clip_grad_norm: 1.0
+  scheduler: cosine
+  loss_text_weight: 1.0
+  loss_image_weight: 0.0
+  seed: 42
+
+evaluation:
+  metrics:
+    - bleu_1
+    - bleu_2
+    - cosine_similarity
+
+paths:
+  dataset: daniel3303/StoryReasoning
+  checkpoint_dir: results/checkpoints
+  feature_cache_dir: results/cache
+  log_dir: results/logs
